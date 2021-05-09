@@ -1,3 +1,6 @@
+package proyectoomega;
+import proyectoomega.Queue;
+
 
 public class Request {
     Queue queue;
