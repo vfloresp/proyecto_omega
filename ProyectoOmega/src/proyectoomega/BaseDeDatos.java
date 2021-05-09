@@ -11,23 +11,25 @@ import java.util.logging.Logger;
 public class BaseDeDatos {
     
     private static String dbURL = "jdbc:derby://localhost:1527/omega;create=true;user=omega;password=omega";
-    private static String tableName = "REGISTRO";
     private static Connection conn = null;
     private static Statement stmt = null;
     
-    public static void main(String[] args)
+    /*public static void main(String[] args)
     {
         createConnection();
         System.out.println(countRegistros());
-        insertRegistro("Susy");
-        //selectRestaurants();
+        //insertRegistro("Victor");
+        //insertContacto("Susy1", "Tabata2"); 
+        //System.out.println(AllContacts("Susy1")); 
+        //System.out.println(login("Tabata2")); 
+        System.out.println(name("Susy1"));
         shutdown();
-    }
+    }*/
     
     /*
     Método que crea la conexión a la base de datos 
     */
-     private static void createConnection()
+    public static void createConnection()
     {
         try
         {
@@ -44,7 +46,7 @@ public class BaseDeDatos {
      /*
      Método que termina la conexión a la base de datos
      */
-    private static void shutdown()
+    public static void shutdown()
     {
         try
         {
@@ -67,14 +69,14 @@ public class BaseDeDatos {
     /*
     Método que cuenta la cantidad de Rows que hay en la tabla REGISTRO 
     */
-     private static int countRegistros(){
+     public static int countRegistros(){
         int total = 0; 
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("select * from " + tableName);
-            if(results.next()){
-                total++; 
-            }  
+            ResultSet resultado = stmt.executeQuery("select count(*) from REGISTRO");
+            if(resultado.next()){
+                total = resultado.getInt(1) ;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,14 +86,14 @@ public class BaseDeDatos {
      /*
      Método que inserta un nuevo Registro y utiliza el método countRegistro() para crear el id del nuevo registro
      */
-    private static void insertRegistro(String nombre)
+    public static void insertRegistro(String nombre)
     {
         try
         {
             int secuencia = countRegistros() +1; 
             String id= nombre + secuencia; 
             stmt = conn.createStatement();
-            stmt.execute("INSERT INTO " + tableName + "(id, nombre) VALUES ('"+
+            stmt.execute("INSERT INTO REGISTRO (id, nombre) VALUES ('"+
                     id + "','" + nombre + "')");
             stmt.close();
         }
@@ -99,5 +101,83 @@ public class BaseDeDatos {
         {
             sqlExcept.printStackTrace();
         }
+    }
+    
+    /*
+     Método que inserta un nuevo CONTACTO 
+     */
+    public static void insertContacto(String id_registro, String id_contacto)
+    {
+        try
+        {
+            stmt = conn.createStatement();
+            stmt.execute("INSERT INTO CONTACTOS (id_registro, id_contacto) VALUES ('"+
+                    id_registro + "','" + id_contacto + "')");
+            stmt.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+    
+    
+    /*
+        Regresa si existe el en los registros este id 
+     */
+    public static boolean login (String id){
+        boolean bandera = false; 
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("select * from Registro where ID = '"+ id + "'");
+             
+            if(results.next()){
+                 if(results.getString(1)!= null){
+                     bandera = true; 
+                 }
+            }
+            results.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return bandera; 
+    }
+    
+    /**/
+    public static String AllContacts (String id){
+        StringBuilder str = new StringBuilder();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("select * from CONTACTOS where id_registro = '"+ id + "'");
+            while(results.next()){
+                 str.append(results.getString(3));
+                 str.append("\n");
+            }
+            results.close();
+            stmt.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return str.toString();
+    }
+    
+    /**/
+    public static String name (String id){
+        StringBuilder str = new StringBuilder();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("select nombre from REGISTRO where id = '"+ id + "'");
+            while(results.next()){
+                 str.append(results.getString(1));
+                 str.append("\n");
+            }
+            results.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return str.toString();
     }
 }

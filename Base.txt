@@ -1,0 +1,22 @@
+drop table REGISTRO; 
+drop table CONTACTOS; 
+ 
+------------------------------- 
+--     REGISTRO
+-------------------------------
+CREATE TABLE REGISTRO
+(
+  id VARCHAR(15)  NOT NULL PRIMARY KEY,
+   nombre VARCHAR(30) NOT NULL 
+ );
+
+------------------------------- 
+--     CONTACTOS
+-------------------------------
+CREATE TABLE CONTACTOS
+(
+  idconexion INT  NOT NULL GENERATED ALWAYS AS IDENTITY 
+     (START WITH 1 ,INCREMENT BY 1) PRIMARY KEY,
+   id_registro VARCHAR(15) NOT NULL REFERENCES REGISTRO, 
+   id_contacto VARCHAR (15) NOT NULL
+ );
