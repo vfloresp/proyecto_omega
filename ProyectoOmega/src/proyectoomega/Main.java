@@ -1,3 +1,6 @@
+package proyectoomega;
+import proyectoomega.Queue;
+
 
 
 public class Main {
@@ -39,24 +42,24 @@ public class Main {
         Queue pA = new Queue("colaA");
         Queue pB = new Queue("colaB");
 
-        //Messages messagesA = new Messages(pA);
-        //Messages messagesB = new Messages(pB);
-        //Request requestA = new Request(pA);
-        //Request requestB = new Request(pB);
+        Messages messagesA = new Messages(pA);
+        Messages messagesB = new Messages(pB);
+        Request requestA = new Request(pA);
+        Request requestB = new Request(pB);
 
-        //messagesB.sendMessage("colaA", "Message while A disconected");
+        messagesB.sendMessage("colaA", "Message while A disconected");
 
-        //pA.receivedMessages();
+        pA.receivedMessages();
         pB.receivedMessages();
 
-        //pA.startListeningForMessages();
+        pA.startListeningForMessages();
 
-        //messagesB.sendMessage("colaA","Message while A connected");
-        //messagesB.sendMessage("colaA","Message2 while A connected");
-        //requestB.sendRequest("colaA");
-        //requestA.respondRequest("colaB",true);
+        messagesB.sendMessage("colaA","Message while A connected");
+        messagesB.sendMessage("colaA","Message2 while A connected");
+        requestB.sendRequest("colaA");
+        requestA.respondRequest("colaB",true);
 
-        //pA.stopListeningForMessages();
+        pA.stopListeningForMessages();
 
         pA.closeSession();
         pB.closeSession();

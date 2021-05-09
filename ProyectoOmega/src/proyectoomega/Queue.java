@@ -1,5 +1,6 @@
-import javax.jms.*;
+package proyectoomega;
 
+import javax.jms.*;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
