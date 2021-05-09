@@ -66,26 +66,7 @@ public class Queue {
         }
 
     }
-    /*
-    public void processByCase(String message){
-        String[] parts = message.split(",",2);
-        switch (parts[0]){
-            case "Request":
-                System.out.println("Request");
-                request.receiveRequest(parts[1]);
-                break;
-            case "ResponseRequest":
-                System.out.println("ResponseRequest");
-                request.receiveRequest(parts[1]);
-                break;
-            case "Message":
-                System.out.println("Message");
-                messages.receiveMessage(parts[1]);
-                break;
 
-        }
-    }
-    */
     public void sendMessage(String idToSend, String message ){
         try {
             Destination destination = session.createQueue(idToSend);
