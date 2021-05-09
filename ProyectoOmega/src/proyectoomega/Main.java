@@ -1,4 +1,5 @@
 package proyectoomega;
+import static proyectoomega.BaseDeDatos.*;
 import proyectoomega.Queue;
 
 
@@ -6,6 +7,20 @@ import proyectoomega.Queue;
 public class Main {
 
     public static void main(String[] args){
+        /*
+        -----------------------------------------------------------
+        TESTS PARA BASE DE DATOS
+        ------------------------------------------------------------
+*/
+        createConnection();
+        System.out.println(countRegistros());
+        //insertRegistro("Victor");
+        //insertContacto("Susy1", "Tabata2"); 
+        //System.out.println(AllContacts("Susy1")); 
+        //System.out.println(login("Tabata2")); 
+        System.out.println(name("Susy1"));
+        shutdown();
+    
         /*
         -----------------------------------------------------------
         TESTS PARA QUEUE
