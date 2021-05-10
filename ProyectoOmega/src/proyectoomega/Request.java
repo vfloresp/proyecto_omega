@@ -1,4 +1,5 @@
 package proyectoomega;
+import static proyectoomega.BaseDeDatos.insertContacto;
 import proyectoomega.Queue;
 
 
@@ -16,6 +17,9 @@ public class Request {
     public void respondRequest(String id, boolean accepted){
         String response = accepted ? "accepted" : "declined";
         queue.sendMessage(id,"ResponseRequest,"+response+","+queue.getId());
+        if(accepted){
+            insertContacto(queue.getId(),id);
+        }
     }
 
     public void receiveRequest(String request){
@@ -26,8 +30,10 @@ public class Request {
 
     public void responseRequest(String request){
         String[] parts = request.split(",");
-        if(parts[0]=="accepted"){
+        System.out.println(parts[0]);
+        if(parts[0].equals("accepted")){
             System.out.println("Request accepted by: "+parts[1]);
+            insertContacto(queue.getId(),parts[1]);
         }else{
             System.out.println("Request declined by: "+parts[1]);
         }

@@ -21,8 +21,8 @@ public class MessageClasification {
                 request.receiveRequest(parts[1]);
                 break;
             case "ResponseRequest":
-                System.out.println("ResponseRequest");
-                request.receiveRequest(parts[1]);
+                System.out.println("ResponseRequest ");
+                request.responseRequest(parts[1]);
                 break;
             case "Message":
                 System.out.println("Message");

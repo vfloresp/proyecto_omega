@@ -7,7 +7,7 @@ drop table CONTACTOS;
 CREATE TABLE REGISTRO
 (
   id VARCHAR(15)  NOT NULL PRIMARY KEY,
-   nombre VARCHAR(30) NOT NULL 
+   nombre VARCHAR(10) NOT NULL 
  );
 
 ------------------------------- 
