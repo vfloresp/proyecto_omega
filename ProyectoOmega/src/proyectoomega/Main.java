@@ -13,13 +13,14 @@ public class Main {
         ------------------------------------------------------------
 */
         createConnection();
-        System.out.println(countRegistros());
-        //insertRegistro("Victor");
+        //System.out.println(countRegistros());
+        //insertRegistro("PersonA");
+        //insertRegistro("PersonB");
         //insertContacto("Susy1", "Tabata2"); 
         //System.out.println(AllContacts("Susy1")); 
         //System.out.println(login("Tabata2")); 
-        System.out.println(name("Susy1"));
-        shutdown();
+        //System.out.println(name("Susy1"));
+        
     
         /*
         -----------------------------------------------------------
@@ -54,30 +55,33 @@ public class Main {
         ------------------------------------------------------------
         */
 
-        Queue pA = new Queue("colaA");
-        Queue pB = new Queue("colaB");
+        Queue pA = new Queue("Susy1");
+        Queue pB = new Queue("Victor3");
 
         Messages messagesA = new Messages(pA);
         Messages messagesB = new Messages(pB);
         Request requestA = new Request(pA);
         Request requestB = new Request(pB);
 
-        messagesB.sendMessage("colaA", "Message while A disconected");
+        //messagesB.sendMessage("colaA", "Message while A disconected");
 
         pA.receivedMessages();
         pB.receivedMessages();
 
         pA.startListeningForMessages();
+        pB.startListeningForMessages();
 
-        messagesB.sendMessage("colaA","Message while A connected");
-        messagesB.sendMessage("colaA","Message2 while A connected");
-        requestB.sendRequest("colaA");
-        requestA.respondRequest("colaB",true);
-
+        //messagesB.sendMessage("colaA","Message while A connected");
+        //messagesB.sendMessage("colaA","Message2 while A connected");
+        requestB.sendRequest("Susy1");
+        requestA.respondRequest("Victor3",true);
+        
         pA.stopListeningForMessages();
+        pB.stopListeningForMessages();
 
         pA.closeSession();
         pB.closeSession();
+        
+        shutdown();
     }
-
 }
