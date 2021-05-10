@@ -1,10 +1,12 @@
 package proyectoomega;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,12 +88,13 @@ public class BaseDeDatos {
      /*
      Método que inserta un nuevo Registro y utiliza el método countRegistro() para crear el id del nuevo registro
      */
-    public static void insertRegistro(String nombre)
+    public static String insertRegistro(String nombre)
     {
+        String id = null; 
         try
         {
             int secuencia = countRegistros() +1; 
-            String id= nombre + secuencia; 
+            id = nombre + secuencia; 
             stmt = conn.createStatement();
             stmt.execute("INSERT INTO REGISTRO (id, nombre) VALUES ('"+
                     id + "','" + nombre + "')");
@@ -101,6 +104,7 @@ public class BaseDeDatos {
         {
             sqlExcept.printStackTrace();
         }
+        return id; 
     }
     
     /*
@@ -145,14 +149,13 @@ public class BaseDeDatos {
     }
     
     /**/
-    public static String AllContacts (String id){
-        StringBuilder str = new StringBuilder();
+    public static ArrayList<String> AllContacts (String id){
+        ArrayList<String> contactos = new ArrayList<String>(); 
         try {
             stmt = conn.createStatement();
             ResultSet results = stmt.executeQuery("select * from CONTACTOS where id_registro = '"+ id + "'");
             while(results.next()){
-                 str.append(results.getString(3));
-                 str.append("\n");
+                contactos.add(results.getString(3));
             }
             results.close();
             stmt.close();
@@ -160,7 +163,7 @@ public class BaseDeDatos {
         } catch (SQLException ex) {
             Logger.getLogger(BaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return str.toString();
+        return contactos; 
     }
     
     /**/
