@@ -16,16 +16,25 @@ public class LogIn  extends JFrame{
         JLabel descripcion = new JLabel("Ingrese su Id:");
         JTextField textField = new JTextField(20);
         JButton logIn = new JButton("LogIn");
+        JButton startMenu = new JButton("Start Menu");
         logIn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 createConnection(); 
                 String nombre = textField.getText();
                 if(login(nombre)){
                     System.out.println("Si estas");
+                    MainMenu mainMenu = new MainMenu(nombre);
+                    dispose();
                 }else{
-                    System.out.println("No estas");
+                    System.out.println("El nombre de usuario no esta registrado");
                 }
-                shutdown();
+                //shutdown();
+                //dispose();
+            }
+        });
+        startMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                StartMenu startMenu = new StartMenu();
                 dispose();
             }
         });
@@ -33,6 +42,7 @@ public class LogIn  extends JFrame{
         add(descripcion);
         add(textField);
         add(logIn);
+        add(startMenu);
 
         setSize(300,300);
         setVisible(true);

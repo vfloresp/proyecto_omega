@@ -12,32 +12,27 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import static proyectoomega.BaseDeDatos.*;
 
-
-public class Contactos extends JFrame {
+public class Messages extends JFrame {
     
-    public Contactos(String id){
+    public Messages(String id){
         createConnection(); 
-        this.setTitle("Contacts");
+        this.setTitle("Messages");
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
-        ArrayList<String> contactos = AllContacts(id); 
-        for(String contacto:contactos){
-            JLabel JLcontacto = new JLabel(contacto);
-            add(JLcontacto); 
-        }
         
-        JButton addContact = new JButton("Add Contact");
-        JButton requests = new JButton("Requests");
+        //MENSAJES
+        /*ArrayList<String> messages = AllMessages(id); 
+        for(String message:messages){
+            JLabel JLmessage = new JLabel(message);
+            add(JLmessage); 
+        }*/
+        
+        JButton newMessage = new JButton("New Message");
         JButton mainMenu = new JButton("Main Menu");
-        addContact.addActionListener(new ActionListener() {
+        JButton clearMessages = new JButton("Clear Messages");
+        newMessage.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                AddContact addContact = new AddContact(id);
-                dispose();
-            }
-        });
-        requests.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                Requests requests = new Requests(id);
+                NewMessage newMessage = new NewMessage(id);
                 dispose();
             }
         });
@@ -47,9 +42,14 @@ public class Contactos extends JFrame {
                 dispose();
             }
         });
-        add(addContact);
-        add(requests);
+        clearMessages.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                //LIMPIA MENSAJES EXISTENTES
+            }
+        });
+        add(newMessage);
         add(mainMenu);
+        add(clearMessages);
     
         setSize(300,300);
         setVisible(true);
@@ -60,7 +60,7 @@ public class Contactos extends JFrame {
 
     public static void main(String[] args){
       
-        Contactos contactos = new Contactos("Susy1");
+        Messages messages = new Messages("Susy1");
         
     }
 }

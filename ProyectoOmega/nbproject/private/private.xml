@@ -6,12 +6,17 @@
         <group/>
 =======
         <group>
+            <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/Messages.java</file>
+            <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/StartMenu.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/proyectoomega/BaseDeDatos.java</file>
+            <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/Requests.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/proyectoomega/MessageClasification.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/proyectoomega/Main.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/proyectoomega/Request.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/LogIn.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/Contactos.java</file>
+            <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/AddContact.java</file>
+            <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/NewMessage.java</file>
             <file>file:/D:/tabat/Documents/12/OMEGA/ProyectoOmega/src/frontend/SignIn.java</file>
         </group>
 >>>>>>> 780f05171ea7916a99aecd10c3d464d687589d3b

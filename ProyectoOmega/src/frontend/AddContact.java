@@ -6,37 +6,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static proyectoomega.BaseDeDatos.*;
 
-public class SignIn extends JFrame{
+public class AddContact extends JFrame{
 
-    public SignIn(){
-        this.setTitle("Omega Turbo Message");
+    public AddContact(String id){
+        this.setTitle("Add Contact");
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
-        JLabel descripcion = new JLabel("Ingrese su nombre:");
+        JLabel descripcion = new JLabel("Nombre de usuario que quiere agregar:");
         JTextField textField = new JTextField(20);
-        JButton signIn = new JButton("SignIn");
-        JButton logIn = new JButton("LogIn");
-        signIn.addActionListener(new ActionListener() { 
+        JButton addContact = new JButton("Add Contact");
+        JButton contacts = new JButton("Contacts");
+        addContact.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e){
-                createConnection(); 
-                String nombre = textField.getText();
-                String id = insertRegistro(nombre); 
-                System.out.println(id);
-                //shutdown(); 
-                //dispose();
+                //AÑADIR CONTACTO
             }
         });
-        logIn.addActionListener(new ActionListener() {
+        contacts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                LogIn logIn = new LogIn();
+                Contactos contactos = new Contactos(id);
                 dispose();
             }
         });
         
         add(descripcion);
         add(textField);
-        add(signIn);
-        add(logIn);
+        add(addContact);
+        add(contacts);
 
         setSize(300,300);
         setVisible(true);
@@ -45,7 +40,7 @@ public class SignIn extends JFrame{
     }
 
     public static void main(String[] args){
-        SignIn signIn = new SignIn();
+        AddContact addContact = new AddContact("Susy1");
     }
 
 }
