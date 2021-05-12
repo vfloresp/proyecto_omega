@@ -126,7 +126,13 @@ public class MainMenu extends JFrame {
         setLayout(layout);
         
         for(String message[]:pendingMessages){
-            JLabel JLcontacto = new JLabel("Message from "+message[0]+ ": "+message[1]);
+            String mssg = message[1];
+            if(mssg.split("-")[0].equals("Message")){
+                messages.sendMsgRead(message[0]);
+                mssg = mssg.split("-")[1];
+            }
+            JLabel JLcontacto = new JLabel("Message from "+message[0]+ ": "+mssg);
+            
             add(JLcontacto);
         }
         

@@ -29,7 +29,7 @@ public class Messages {
         String from = parts[0];
         String msg = parts[1];
         System.out.println("Message from: "+from+" said: "+msg);
-        menu.addMessage(from, msg);
+        menu.addMessage(from, "Message-"+msg);
         sendAck(from);
     }
 
