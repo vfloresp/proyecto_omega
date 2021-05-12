@@ -1,6 +1,5 @@
 package proyectoomega;
 import frontend.*;
-import static proyectoomega.BaseDeDatos.*;
 
 
 

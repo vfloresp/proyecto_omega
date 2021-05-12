@@ -10,8 +10,8 @@ public class MessageClasification {
 
     public MessageClasification( Queue queue, MainMenu menu) {
         this.queue = queue;
-        this.request = new Request(this.queue, menu);
-        this.messages = new Messages(this.queue, menu);
+        this.request = new Request(this.queue);
+        this.messages = new Messages(this.queue);
     }
 
     public void classifyMessage(String message){

@@ -10,11 +10,9 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import static proyectoomega.BaseDeDatos.AllContacts;
 import static proyectoomega.BaseDeDatos.createConnection;
-import static proyectoomega.BaseDeDatos.insertRegistro;
 import static proyectoomega.BaseDeDatos.login;
 import static proyectoomega.BaseDeDatos.shutdown;
 import proyectoomega.*;
@@ -33,8 +31,8 @@ public class MainMenu extends JFrame {
         this.pendingMessages =new ArrayList<String[]>();
         this.setTitle("Omega Turbo Message");
         this.queue = new Queue(id, this);
-        this.request = new Request(queue, this);
-        this.messages = new Messages(queue, this);
+        this.request = new Request(queue);
+        this.messages = new Messages(queue);
         this.queue.receivedMessages();
         this.queue.startListeningForMessages();
         MainMenu();
@@ -45,8 +43,8 @@ public class MainMenu extends JFrame {
         repaint(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,60);
         setLayout(layout);
-        JButton contacts = new JButton("Contacts");
-        JButton messages = new JButton("Messages");
+        JButton contacts = new JButton("Contactos");
+        JButton messages = new JButton("Nuevo Mensaje");
         JButton logOut = new JButton("logOut");
         contacts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
@@ -55,7 +53,7 @@ public class MainMenu extends JFrame {
         });
         messages.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Messages();
+                NewMessage();
             }
         });
         logOut.addActionListener(new ActionListener() {
@@ -70,7 +68,7 @@ public class MainMenu extends JFrame {
         add(messages);
         add(logOut);
 
-        setSize(300,300);
+        setSize(500,600);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -89,28 +87,23 @@ public class MainMenu extends JFrame {
         }
 
         JButton addContact = new JButton("Add Contact");
-        JButton requests = new JButton("Requests");
         JButton mainMenu = new JButton("Main Menu");
         addContact.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 AddContact(); 
             }
         });
-        requests.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                Request(); 
-            }
-        });
+        
         mainMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 MainMenu(); 
             }
         });
         add(addContact);
-        add(requests);
+
         add(mainMenu);
 
-        setSize(300,300);
+        setSize(500,600);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -118,52 +111,7 @@ public class MainMenu extends JFrame {
     }
        
     
-    public void Messages(){
-        getContentPane().removeAll(); 
-        repaint(); 
-         createConnection(); 
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
-        setLayout(layout);
-        
-        for(String message[]:pendingMessages){
-            String mssg = message[1];
-            if(mssg.split("-")[0].equals("Message")){
-                messages.sendMsgRead(message[0]);
-                mssg = mssg.split("-")[1];
-            }
-            JLabel JLcontacto = new JLabel("Message from "+message[0]+ ": "+mssg);
-            
-            add(JLcontacto);
-        }
-        
-        JButton newMessage = new JButton("New Message");
-        JButton mainMenu = new JButton("Main Menu");
-        JButton clearMessages = new JButton("Clear Messages");
-        newMessage.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                NewMessage(); 
-            }
-        });
-        mainMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                MainMenu();
-            }
-        });
-        clearMessages.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                pendingMessages.clear();
-            }
-        });
-        add(newMessage);
-        add(mainMenu);
-        add(clearMessages);
     
-        setSize(300,300);
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        shutdown();
-    }
     
     public void NewMessage(){
         getContentPane().removeAll(); 
@@ -185,20 +133,21 @@ public class MainMenu extends JFrame {
         JLabel textMessageLabel = new JLabel("Mensaje:");
         JTextField textMessage = new JTextField(40);
         JButton send = new JButton("Send");
-        JButton messageButton = new JButton("Messages");
+        JButton menuButton = new JButton("Main Menu");
         send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 createConnection();
                 String id = (String) contactList.getSelectedItem();
                 String mensaje = textMessage.getText();
                 messages.sendMessage(id,mensaje);
+                PopUp p = new PopUp("Mensaje enviado","Mensaje enviado a" + id,queue);
                 shutdown();
 
             }
         });
-        messageButton.addActionListener(new ActionListener() {
+        menuButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Messages(); 
+                MainMenu(); 
             }
         });
         
@@ -206,69 +155,15 @@ public class MainMenu extends JFrame {
         add(textMessageLabel);
         add(textMessage);
         add(send);
-        add(messageButton);
+        add(menuButton);
 
-        setSize(500, 300);
+        setSize(500,600);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
     }
     
-    public void Request (){
-        getContentPane().removeAll();
-        repaint(); 
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
-        setLayout(layout);
-        
-        //RADIO BUTTONS DE LAS SOLICITUDES
-        String[] ids = new String[pendingRequests.size()];
-        int i = 0;
-        for(String idRequest:pendingRequests){
-            ids[i] = idRequest;
-            i++;
-        }
-        
-        JComboBox<String> idList = new JComboBox<>(ids);
-        add(idList);
-        
-        JButton accept = new JButton("Accept");
-        JButton decline = new JButton("Decline");
-        JButton contacts = new JButton("Contacts");
-        accept.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e){
-                createConnection();
-                String selectedId = (String) idList.getSelectedItem();
-                request.respondRequest(selectedId,true);
-                pendingRequests.remove(selectedId);
-                shutdown();
-            }
-        });
-        decline.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e){
-                createConnection();
-                String selectedId = (String) idList.getSelectedItem();
-                request.respondRequest(selectedId,false);
-                pendingRequests.remove(selectedId);
-                shutdown();
-            }
-        });
-        contacts.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                Contact(); 
-            }
-        });
-        
-        add(accept);
-        add(decline);
-        add(contacts);
-
-        setSize(300,300);
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-    }
-
     public void AddContact (){
         getContentPane().removeAll(); 
         repaint(); 
@@ -284,6 +179,7 @@ public class MainMenu extends JFrame {
                 String id = textField.getText();
                 if(login(id)){
                     request.sendRequest(id);
+                    PopUp p = new PopUp("Solicitud Enviada", "Solicitud enviada a "+id,queue);
                 }else{
                     System.out.println("El nombre de usuario no esta registrado");
                 }
@@ -300,7 +196,7 @@ public class MainMenu extends JFrame {
         add(addContact);
         add(contacts);
 
-        setSize(300,300);
+        setSize(500,600);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

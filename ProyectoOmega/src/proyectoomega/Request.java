@@ -1,16 +1,16 @@
 package proyectoomega;
 import frontend.MainMenu;
+import frontend.PopUp;
+import frontend.PopUpBotones;
 import static proyectoomega.BaseDeDatos.insertContacto;
 import proyectoomega.Queue;
 
 
 public class Request {
     private Queue queue;
-    private MainMenu menu;
 
-    public Request(Queue queue, MainMenu menu) {
+    public Request(Queue queue) {
         this.queue = queue;
-        this.menu = menu;
         
     }
 
@@ -23,17 +23,16 @@ public class Request {
         queue.sendMessage(id,"ResponseRequest,"+response+","+queue.getId());
         if(accepted){
             insertContacto(queue.getId(),id);
-            menu.addMessage(id, " Accepted your request.");
+            PopUp pop = new PopUp("Solicitud de "+queue.getId(),id+" Acepto tu solicitud",queue);
         }else{
-            menu.addMessage(id, " Declined your request.");
+            PopUp pop = new PopUp("Solicitud de "+queue.getId(),id+" Rechazo tu solicitud",queue);
         }
     }
 
     public void receiveRequest(String request){
         String idRequest = request;
         System.out.println("Received request from: "+idRequest);
-        menu.addRequest(idRequest);
-
+        PopUpBotones pop = new PopUpBotones("Solicitud para "+queue.getId(),idRequest+" Te envió una solicitud",queue);
     }
 
     public void responseRequest(String request){

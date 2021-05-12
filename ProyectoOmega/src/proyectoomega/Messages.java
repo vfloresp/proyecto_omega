@@ -1,15 +1,14 @@
 package proyectoomega;
 import frontend.MainMenu;
-import proyectoomega.Queue;
+import frontend.PopUp;
+import proyectoomega.*;
 
 
 public class Messages {
     private Queue queue;
-    private MainMenu menu;
 
-    public Messages(Queue queue, MainMenu menu) {
+    public Messages(Queue queue) {
         this.queue = queue;
-        this.menu = menu;
     }
 
     public void sendMessage(String idToSend, String message){
@@ -29,18 +28,18 @@ public class Messages {
         String from = parts[0];
         String msg = parts[1];
         System.out.println("Message from: "+from+" said: "+msg);
-        menu.addMessage(from, "Message-"+msg);
+        PopUp pop = new PopUp("Nuevo mensaje "+queue.getId(), "NuevoMensaje,"+from+"-"+ msg,queue);
         sendAck(from);
     }
 
     public void messageAck(String idFrom){
         System.out.println("message received by "+ idFrom);
-        menu.addMessage(idFrom, " Received your message.");
+        PopUp pop = new PopUp("Mensaje Recibido "+queue.getId(), idFrom + " Recibio tu mensaje", queue);
     }
 
     public void messageRead(String idFrom){
         System.out.println("message read by " + idFrom);
-        menu.addMessage(idFrom, " Read your message.");
+        PopUp pop = new PopUp("Mensaje Leido "+queue.getId(), idFrom + " Leyo tu mensaje", queue);
     }
 
 

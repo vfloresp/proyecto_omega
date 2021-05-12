@@ -111,6 +111,7 @@ public class StartMenu extends JFrame{
                 createConnection(); 
                 String nombre = textField.getText();
                 String id = insertRegistro(nombre); 
+                PopUp p = new PopUp("Bienvenido "+nombre,"Tu id es: " + id,null);
                 System.out.println(id);
             }
         });
