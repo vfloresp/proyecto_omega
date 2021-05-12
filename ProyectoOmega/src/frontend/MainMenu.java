@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
@@ -16,120 +17,30 @@ import static proyectoomega.BaseDeDatos.createConnection;
 import static proyectoomega.BaseDeDatos.insertRegistro;
 import static proyectoomega.BaseDeDatos.login;
 import static proyectoomega.BaseDeDatos.shutdown;
+import proyectoomega.*;
 
 
-public class Frontend extends JFrame {
-    
-    public Frontend(){
+public class MainMenu extends JFrame {
+    private Queue queue;
+    private Request request;
+    private Messages messages;
+    private ArrayList<String> pendingRequests;  
+    private ArrayList<String[]> pendingMessages; 
+
+            
+    public MainMenu(String id){
+        this.pendingRequests = new ArrayList<String>();
+        this.pendingMessages =new ArrayList<String[]>();
         this.setTitle("Omega Turbo Message");
-        StartMenu(); 
+        this.queue = new Queue(id, this);
+        this.request = new Request(queue, this);
+        this.messages = new Messages(queue, this);
+        this.queue.receivedMessages();
+        this.queue.startListeningForMessages();
+        MainMenu();
     }
     
-    public void StartMenu(){
-       
-        getContentPane().removeAll();
-        repaint(); 
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,60);
-        setLayout(layout);
-        JButton logIn = new JButton("LogIn");
-        JButton signIn = new JButton("SignIn");
-      
-        logIn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                Login();
-            }
-        });
-        
-        signIn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                Signin();
-            }
-        });
-        
-        add(logIn);
-        add(signIn);
-        setSize(300,300);
-        setVisible(true);
-        setLocationRelativeTo(null);
-     
-    }
-  
-    public void Login(){ 
-        getContentPane().removeAll(); 
-        repaint(); 
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
-        setLayout(layout);
-        JLabel descripcion = new JLabel("Ingrese su Id:");
-        JTextField textField = new JTextField(20);
-        JButton logIn = new JButton("LogIn");
-        JButton startMenu = new JButton("Start Menu");
-        logIn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                createConnection(); 
-                String nombre = textField.getText();
-                if(login(nombre)){
-                    System.out.println("Si estas");
-                    MainMenu(nombre);
-                }else{
-                    System.out.println("El nombre de usuario no esta registrado");
-                }
-
-            }
-        });
-         startMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                StartMenu();
-               }
-        });
-
-        add(descripcion);
-        add(textField);
-        add(logIn);
-        add(startMenu);
-
-        setSize(300,300);
-        setVisible(true);
-        setLocationRelativeTo(null);
-    }
-       
-    
-    
-    public void Signin(){
-        getContentPane().removeAll();
-        repaint(); 
-        FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
-        setLayout(layout);
-        JLabel descripcion = new JLabel("Ingrese su nombre:");
-        JTextField textField = new JTextField(20);
-        JButton signIn = new JButton("SignIn");
-        JButton logIn = new JButton("LogIn");
-        signIn.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e){
-                createConnection(); 
-                String nombre = textField.getText();
-                String id = insertRegistro(nombre); 
-                System.out.println(id);
-            }
-        });
-        logIn.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e){
-                Login();
-            }
-        });
-
-        add(descripcion);
-        add(textField);
-        add(signIn);
-        add(logIn);
-
-        setSize(300,300);
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
-    }
-    
-    public void MainMenu(String id){
+    public void MainMenu(){
         getContentPane().removeAll();
         repaint(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,60);
@@ -139,17 +50,20 @@ public class Frontend extends JFrame {
         JButton logOut = new JButton("logOut");
         contacts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Contact(id);
+                Contact();
             }
         });
         messages.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Messages(id);
+                Messages();
             }
         });
         logOut.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-               Login(); 
+               queue.stopListeningForMessages();
+               queue.closeSession();
+               StartMenu st = new StartMenu();
+               dispose();
             }
         });
         add(contacts);
@@ -162,13 +76,13 @@ public class Frontend extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
-    public void Contact (String id){
+    public void Contact (){
         getContentPane().removeAll();
         repaint(); 
         createConnection(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
-        ArrayList<String> contactos = AllContacts(id); 
+        ArrayList<String> contactos = AllContacts(queue.getId()); 
         for(String contacto:contactos){
             JLabel JLcontacto = new JLabel(contacto);
             add(JLcontacto); 
@@ -179,17 +93,17 @@ public class Frontend extends JFrame {
         JButton mainMenu = new JButton("Main Menu");
         addContact.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                AddContact(id); 
+                AddContact(); 
             }
         });
         requests.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Request(id); 
+                Request(); 
             }
         });
         mainMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                MainMenu(id); 
+                MainMenu(); 
             }
         });
         add(addContact);
@@ -204,36 +118,34 @@ public class Frontend extends JFrame {
     }
        
     
-    public void Messages(String id){
+    public void Messages(){
         getContentPane().removeAll(); 
         repaint(); 
          createConnection(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
         
-        //MENSAJES
-        /*ArrayList<String> messages = AllMessages(id); 
-        for(String message:messages){
-            JLabel JLmessage = new JLabel(message);
-            add(JLmessage); 
-        }*/
+        for(String message[]:pendingMessages){
+            JLabel JLcontacto = new JLabel("Message from "+message[0]+ ": "+message[1]);
+            add(JLcontacto);
+        }
         
         JButton newMessage = new JButton("New Message");
         JButton mainMenu = new JButton("Main Menu");
         JButton clearMessages = new JButton("Clear Messages");
         newMessage.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                NewMessage(id); 
+                NewMessage(); 
             }
         });
         mainMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                MainMenu(id);
+                MainMenu();
             }
         });
         clearMessages.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                //LIMPIA MENSAJES EXISTENTES
+                pendingMessages.clear();
             }
         });
         add(newMessage);
@@ -247,34 +159,48 @@ public class Frontend extends JFrame {
         shutdown();
     }
     
-    public void NewMessage(String id){
+    public void NewMessage(){
         getContentPane().removeAll(); 
         repaint(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER, 100, 40);
         setLayout(layout);
-        JLabel descripcion = new JLabel("Nombre de usuario del destinatario:");
-        JTextField textField = new JTextField(20);
-        JLabel descripcion2 = new JLabel("Mensaje:");
-        JTextField textField2 = new JTextField(40);
+        createConnection();
+        ArrayList<String> contacts = AllContacts(queue.getId());
+        shutdown();
+        String[] cantactsArray = new String[contacts.size()];
+        int i = 0;
+        for(String contact:contacts){
+            cantactsArray[i] = contact;
+            i++;
+        }
+        
+        JComboBox<String> contactList = new JComboBox<>(cantactsArray);
+
+        JLabel textMessageLabel = new JLabel("Mensaje:");
+        JTextField textMessage = new JTextField(40);
         JButton send = new JButton("Send");
-        JButton messages = new JButton("Messages");
+        JButton messageButton = new JButton("Messages");
         send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //ENVIAR MENSAJE
-            }
-        });
-        messages.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Messages(id); 
-            }
-        });
+                createConnection();
+                String id = (String) contactList.getSelectedItem();
+                String mensaje = textMessage.getText();
+                messages.sendMessage(id,mensaje);
+                shutdown();
 
-        add(descripcion);
-        add(textField);
-        add(descripcion2);
-        add(textField2);
+            }
+        });
+        messageButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Messages(); 
+            }
+        });
+        
+        add(contactList);
+        add(textMessageLabel);
+        add(textMessage);
         add(send);
-        add(messages);
+        add(messageButton);
 
         setSize(500, 300);
         setVisible(true);
@@ -283,30 +209,47 @@ public class Frontend extends JFrame {
         
     }
     
-    public void Request (String id){
+    public void Request (){
         getContentPane().removeAll();
         repaint(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
         
         //RADIO BUTTONS DE LAS SOLICITUDES
+        String[] ids = new String[pendingRequests.size()];
+        int i = 0;
+        for(String idRequest:pendingRequests){
+            ids[i] = idRequest;
+            i++;
+        }
+        
+        JComboBox<String> idList = new JComboBox<>(ids);
+        add(idList);
         
         JButton accept = new JButton("Accept");
         JButton decline = new JButton("Decline");
         JButton contacts = new JButton("Contacts");
         accept.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e){
-                //ACEPTAR SOLICITUD DEL ID DEL RADIOBUTTON SELECCIONADO
+                createConnection();
+                String selectedId = (String) idList.getSelectedItem();
+                request.respondRequest(selectedId,true);
+                pendingRequests.remove(selectedId);
+                shutdown();
             }
         });
         decline.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e){
-                //RECHAZAR SOLICITUD DEL ID DEL RADIOBUTTON SELECCIONADO
+                createConnection();
+                String selectedId = (String) idList.getSelectedItem();
+                request.respondRequest(selectedId,false);
+                pendingRequests.remove(selectedId);
+                shutdown();
             }
         });
         contacts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Contact(id); 
+                Contact(); 
             }
         });
         
@@ -320,23 +263,29 @@ public class Frontend extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public void AddContact (String id){
+    public void AddContact (){
         getContentPane().removeAll(); 
         repaint(); 
         FlowLayout layout = new FlowLayout(FlowLayout.CENTER,100,40);
         setLayout(layout);
         JLabel descripcion = new JLabel("Nombre de usuario que quiere agregar:");
-        JTextField textField = new JTextField(20);
+        JTextField textField = new JTextField(15);
         JButton addContact = new JButton("Add Contact");
         JButton contacts = new JButton("Contacts");
         addContact.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e){
-                //AÑADIR CONTACTO
+                createConnection();
+                String id = textField.getText();
+                if(login(id)){
+                    request.sendRequest(id);
+                }else{
+                    System.out.println("El nombre de usuario no esta registrado");
+                }
             }
         });
         contacts.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                Contact(id); 
+                Contact(); 
             }
         });
         
@@ -350,8 +299,16 @@ public class Frontend extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    public static void main(String[] args){
-        Frontend front = new Frontend();
+    
+    public void addRequest(String id){
+        pendingRequests.add(id);
+    }
+    
+    public void addMessage(String id, String message){
+        String[] tuple = new String[2];
+        tuple[0] = id;
+        tuple[1] = message;
+        pendingMessages.add(tuple);
     }
     
 }

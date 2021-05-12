@@ -1,4 +1,5 @@
 package proyectoomega;
+import frontend.MainMenu;
 import proyectoomega.Queue;
 
 
@@ -7,10 +8,10 @@ public class MessageClasification {
     private Messages messages;
     private Queue queue;
 
-    public MessageClasification( Queue queue) {
+    public MessageClasification( Queue queue, MainMenu menu) {
         this.queue = queue;
-        this.request = new Request(this.queue);
-        this.messages = new Messages(this.queue);
+        this.request = new Request(this.queue, menu);
+        this.messages = new Messages(this.queue, menu);
     }
 
     public void classifyMessage(String message){

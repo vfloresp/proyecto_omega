@@ -1,5 +1,6 @@
 package proyectoomega;
 
+import frontend.MainMenu;
 import javax.jms.*;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -15,15 +16,16 @@ public class Queue {
     private MessageConsumer messageConsumer;
     private Destination destination;
     private MessageClasification messageClasification;
+    private MainMenu menu;
     //private Request request;
     //private Messages messages;
 
 
-    public Queue(String id) {
+    public Queue(String id, MainMenu menu) {
         this.id = id;
         this.newConnection();
         this.newQueue(this.id);
-        this.messageClasification = new MessageClasification(this);
+        this.messageClasification = new MessageClasification(this,menu);
         //this.request = new Request(this);
         //this.messages = new Messages(this);
     }
@@ -55,7 +57,6 @@ public class Queue {
                 Message msg = messageConsumer.receive(5000);
                 if(msg instanceof TextMessage){
                     TextMessage txtMessage = (TextMessage) msg;
-                    //System.out.println(txtMessage.getText());
                     messageClasification.classifyMessage(txtMessage.getText());
                 }else{
                     moreMsg = false;
@@ -84,7 +85,7 @@ public class Queue {
     public void startListeningForMessages(){
         try {
             messageConsumer = session.createConsumer(destination);
-            messageConsumer.setMessageListener(new MessageListenerOnLine(this));
+            messageConsumer.setMessageListener(new MessageListenerOnLine(this, menu));
             connection.start();
         } catch (JMSException e) {
             e.printStackTrace();

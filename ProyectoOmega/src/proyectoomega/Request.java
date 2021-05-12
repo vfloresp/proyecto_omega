@@ -1,13 +1,17 @@
 package proyectoomega;
+import frontend.MainMenu;
 import static proyectoomega.BaseDeDatos.insertContacto;
 import proyectoomega.Queue;
 
 
 public class Request {
-    Queue queue;
+    private Queue queue;
+    private MainMenu menu;
 
-    public Request(Queue queue) {
+    public Request(Queue queue, MainMenu menu) {
         this.queue = queue;
+        this.menu = menu;
+        
     }
 
     public void sendRequest(String id){
@@ -19,12 +23,16 @@ public class Request {
         queue.sendMessage(id,"ResponseRequest,"+response+","+queue.getId());
         if(accepted){
             insertContacto(queue.getId(),id);
+            menu.addMessage(id, " Accepted your request.");
+        }else{
+            menu.addMessage(id, " Declined your request.");
         }
     }
 
     public void receiveRequest(String request){
         String idRequest = request;
         System.out.println("Received request from: "+idRequest);
+        menu.addRequest(idRequest);
 
     }
 

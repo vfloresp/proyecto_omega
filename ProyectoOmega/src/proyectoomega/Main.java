@@ -1,6 +1,5 @@
 package proyectoomega;
 import static proyectoomega.BaseDeDatos.*;
-import proyectoomega.Queue;
 
 
 
@@ -54,7 +53,7 @@ public class Main {
         TESTS PARA MESSAGES/REQUEST
         ------------------------------------------------------------
         */
-
+        /*
         Queue pA = new Queue("Susy1");
         Queue pB = new Queue("Victor3");
 
@@ -62,9 +61,9 @@ public class Main {
         Messages messagesB = new Messages(pB);
         Request requestA = new Request(pA);
         Request requestB = new Request(pB);
-
+*/
         //messagesB.sendMessage("colaA", "Message while A disconected");
-
+/*
         pA.receivedMessages();
         pB.receivedMessages();
 
@@ -81,7 +80,7 @@ public class Main {
 
         pA.closeSession();
         pB.closeSession();
-        
+        */
         shutdown();
     }
 }
